@@ -93,7 +93,7 @@ def check_board_full(conn, boardNm):
 
 
 #보드 등록
-def insert_board(conn, data, browser, CurCount, MaxCount):
+def insert_board(conn, data, browser, CurCount, MaxCount, linkList):
     
     print(data)
     print("browser session : ",browser)
@@ -105,7 +105,8 @@ def insert_board(conn, data, browser, CurCount, MaxCount):
     comment = data[3] #comment = "설명 테스트"
     print("링크")
     contentsLink = data[4] #contentsLink = "http://www.todayhumor.co.kr/board/view.php?table=humorbest&no=1705463"
-
+    
+    linkList.append(data[6])
     print("카테고리 19 : humor")
     category = str(data[5]) #category = "19"
 
@@ -182,7 +183,7 @@ def insert_board(conn, data, browser, CurCount, MaxCount):
         else :
             
             print("#############LINK_INFO UPLOAD_FLAG Y 처리 & BOARD_MASTER Count + 1 START#############")
-            add_complete_update1(conn, data[0], data[6])
+            add_complete_update1(conn, data[0], data[6], linkList)
             print("#############LINK_INFO UPLOAD_FLAG Y 처리 & BOARD_MASTER Count + 1 END#############")
 
             browser.execute_script("document.getElementsByClassName('btn_g btn_primary')[1].click()")
@@ -202,14 +203,16 @@ def init_board_curcnt_zero(conn) :
 
 
 #BOARD COUNT + 1 AND LINK_INP UPDATE = Y처리
-def add_complete_update1(conn, boardNm, linkNo) :
+def add_complete_update1(conn, boardNm, linkNo, linkList) :
 
     cur = conn.cursor()
 
     cur.execute("UPDATE 'BOARD_MASTER' SET CUR_CNT = CUR_CNT + ? WHERE BOARD_NAME = ?",(1,str(boardNm)))
     conn.commit()
 
-    cur.execute("UPDATE 'LINK_INFO' SET UPLOAD_FLAG = 'Y' WHERE LINK_NO = ?", (int(linkNo),))
+    for no in linkList :
+        cur.execute("UPDATE 'LINK_INFO' SET UPLOAD_FLAG = 'Y' WHERE LINK_NO = ?", (int(no),))
+    
     conn.commit()
 
     #conn.close()
@@ -237,6 +240,8 @@ def board_run(conn,browser) :
     
     curCount = 0
     maxCount = 5
+    borderNm = []
+    linkList = []
     #카카오 보드에 입력
     for tmp in data :
         print("보드 발행 max 인지 체크 시작", tmp)
@@ -247,9 +252,11 @@ def board_run(conn,browser) :
         if cnt > 0 :
             continue
         else :
-            curCount = insert_board(conn,tmp,browser, curCount, maxCount)
+            curCount = insert_board(conn,tmp,browser, curCount, maxCount, linkList)
         
         if curCount == maxCount : 
+            borderNm = []
+            linkList = []
             curCount = 0
             #try :
             #    insert_board(tmp,browser)

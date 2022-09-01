@@ -106,7 +106,10 @@ def validation_check(conn, siteNo, no, title):
 #데이터 조회
 def get_site_info(conn):
     print("################# DB GET START ##################")
-    sql = "select A.BOARD_NAME, B.SITE_NO, A.CATEGORY,  B.DEFAULT_URL, B.URL1 from BOARD_MASTER A LEFT OUTER JOIN SITE_MASTER B WHERE A.BOARD_NAME = B.BOARD_NAME AND A.USE_YN = 'Y' AND B.USE_YN = 'Y' AND A.CUR_CNT < A.MAX_CNT"
+    #보더 개수 제한
+    #sql = "select A.BOARD_NAME, B.SITE_NO, A.CATEGORY,  B.DEFAULT_URL, B.URL1 from BOARD_MASTER A LEFT OUTER JOIN SITE_MASTER B WHERE A.BOARD_NAME = B.BOARD_NAME AND A.USE_YN = 'Y' AND B.USE_YN = 'Y' AND A.CUR_CNT < A.MAX_CNT"
+    #보더 개수 무제한
+    sql = "select A.BOARD_NAME, B.SITE_NO, A.CATEGORY,  B.DEFAULT_URL, B.URL1 from BOARD_MASTER A LEFT OUTER JOIN SITE_MASTER B WHERE A.BOARD_NAME = B.BOARD_NAME AND A.USE_YN = 'Y' AND B.USE_YN = 'Y'"
     cur = conn.cursor()
     cur.execute(sql)
     #conn.close()
