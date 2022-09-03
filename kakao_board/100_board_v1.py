@@ -109,7 +109,9 @@ def insert_board(conn, data, browser, CurCount, MaxCount, linkList):
     linkList.append(data[6])
     print("카테고리 19 : humor")
     category = str(data[5]) #category = "19"
-
+    
+    viewType = 1
+    
     if CurCount == 0 : 
         print("################# 보드 발행 START ################")
         print("보드 대시보드 이동")
@@ -129,6 +131,13 @@ def insert_board(conn, data, browser, CurCount, MaxCount, linkList):
         print("보드 설명 입력")
         boardCmt = browser.find_element(By.ID, "boardCmt")
         boardCmt.send_keys(comment)
+        
+        sleep(1)
+        print("보드 VIEW 타입 설정")
+        browser.find_element(By.XPATH,"//*[@id='mainContent']/div[2]/div/div[1]/div[2]/div[2]/ul/li["+str(viewType)+"]/button").click()
+        sleep(1)
+        
+        
         sleep(1)
         print("보드 링크 탭 선택")
         browser.find_element(By.XPATH,"//*[@id='mainContent']/div[2]/div/div[2]/div[2]/ul/li[2]/a").click()
@@ -147,13 +156,13 @@ def insert_board(conn, data, browser, CurCount, MaxCount, linkList):
     sleep(1)
     print("링크 검색")
     browser.find_element(By.CLASS_NAME,"btn_search").click()
-    sleep(3)
+    sleep(5)
     print("보드 담기")
     browser.find_element(By.XPATH,"//*[@id='mainContent']/div[2]/div/div[2]/div[3]/form/div[2]/ul/li/div[2]/button").click()
     
     CurCount = CurCount+1
     if CurCount == MaxCount : 
-        sleep(2)
+        sleep(3)
         print("발행하기")
         browser.find_element(By.XPATH,"//*[@id='mainContent']/div[3]/div[2]/button[2]").click()
         sleep(2)
