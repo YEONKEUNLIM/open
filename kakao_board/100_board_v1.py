@@ -248,7 +248,7 @@ def board_run(conn,browser) :
         print("등록된 data가 없습니다. skip", data)
     
     curCount = 0
-    maxCount = 5
+    maxCount = 3
     borderNm = []
     linkList = []
     #카카오 보드에 입력
