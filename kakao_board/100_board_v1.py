@@ -1,5 +1,6 @@
 from ast import Try
 from asyncio.windows_events import NULL
+from cProfile import label
 from concurrent.futures import thread
 from socket import create_connection
 import threading
@@ -11,6 +12,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import sqlite3
 from sqlite3 import Error
+import datetime
 
 
 kakaoUrl = "https://creators.kakao.com/" #kakao 창작 Url
@@ -81,7 +83,7 @@ def data_search(conn):
 #데이터 조회
 def check_board_full(conn, boardNm):
     print("################# DB GET START ##################")
-    sql = "select COUNT(BOARD_NAME)AS CNT from BOARD_MASTER where BOARD_NAME = ? AND CUR_CNT >= MAX_CNT"
+    sql = "select CUR_CNT, MAX_CNT  from BOARD_MASTER where BOARD_NAME = ?"
     cur = conn.cursor()
     cur.execute(sql,(boardNm,))
     #conn.close()
@@ -93,7 +95,7 @@ def check_board_full(conn, boardNm):
 
 
 #보드 등록
-def insert_board(conn, data, browser, CurCount, MaxCount, linkList):
+def insert_board(conn, data, browser, CurCount, MaxCount, linkList, tomorrow, boardCount):
     
     print(data)
     print("browser session : ",browser)
@@ -165,6 +167,21 @@ def insert_board(conn, data, browser, CurCount, MaxCount, linkList):
         sleep(3)
         print("발행하기")
         browser.find_element(By.XPATH,"//*[@id='mainContent']/div[3]/div[2]/button[2]").click()
+        sleep(2)
+        print("예약")
+        browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[2]/dl/dd/div/div[2]/label").click()
+
+        print("시간 설정")
+        browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[2]/dl/dd/div/div[5]/div/a").click()
+  
+        sleep(2)
+        print("시간 선택")
+        browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[2]/dl/dd/div/div[5]/div/div/ul/li['"+str(boardCount)+"']/a").click()
+        
+        sleep(2)
+        print("발행설정 > 카테고리(선택) 시선이 담긴 이슈")
+        browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[3]/dl/dd/div/div[3]/label").click()
+       
         sleep(2)
         print("발행설정 > 카테고리(선택)")
         browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[3]/dl/dd/div/div["+category+"]/label").click()
@@ -251,17 +268,24 @@ def board_run(conn,browser) :
     maxCount = 3
     borderNm = []
     linkList = []
+    print("=========111===========")
+    tomorrow = datetime.date.today() + datetime.timedelta(days=1)
+    format = '%Y-%m-%d'
+    tomorrowStr = tomorrow.strftime(format)
+    print("=========333===========",tomorrowStr)
+    print("=========444===========",type(tomorrowStr))
     #카카오 보드에 입력
     for tmp in data :
         print("보드 발행 max 인지 체크 시작", tmp)
-        cnt = check_board_full(conn, tmp[0]).fetchone()[0]
-        print("0 : 보드 발행 가능, 1:보드 Full 발행 불가능 : ",cnt)
+        boardMaxData = check_board_full(conn, tmp[0]).fetchone()
+        print("=========444===========",boardMaxData)
+    
         print("보드 발행 max 인지 체크 종료")
         
-        if cnt > 0 :
+        if boardMaxData[0] >= boardMaxData[1] :
             continue
         else :
-            curCount = insert_board(conn,tmp,browser, curCount, maxCount, linkList)
+            curCount = insert_board(conn,tmp,browser, curCount, maxCount, linkList, tomorrowStr, boardMaxData[0] + 9)
         
         if curCount == maxCount : 
             borderNm = []
