@@ -13,6 +13,7 @@ from selenium.webdriver.common.by import By
 import sqlite3
 from sqlite3 import Error
 import datetime
+import os
 
 
 kakaoUrl = "https://creators.kakao.com/" #kakao 창작 Url
@@ -41,11 +42,18 @@ def kakao_login(m):
         browser.find_element(By.CLASS_NAME, "link_login").click()
 
         print("로그인 접속 정보 입력")
-        browser.find_element(By.ID, "id_email_2").send_keys("01091300112")
-        browser.find_element(By.ID,"id_password_3").send_keys("sksmsdus00!!!")
+        
+
+        ##browser.find_element(By.ID, "id_email_2").send_keys("01091300112")
+        ##browser.find_element(By.ID,"id_password_3").send_keys("sksmsdus00!!!")
+       
+        browser.find_element(By.ID, "input-loginKey").send_keys("01091300112")
+        browser.find_element(By.ID,"input-password").send_keys("sksmsdus00!!!")
         sleep(1)
         print("로그인")
-        browser.find_element(By.CLASS_NAME,"btn_confirm").click()
+        browser.find_element(By.CLASS_NAME,"highlight").click()
+        ##browser.find_element(By.CLASS_NAME,"btn_confirm").click()
+
 
         print("로그인 인증까지 대기시간 필요")
         sleep(10)
@@ -168,15 +176,37 @@ def insert_board(conn, data, browser, CurCount, MaxCount, linkList, tomorrow, bo
         print("발행하기")
         browser.find_element(By.XPATH,"//*[@id='mainContent']/div[3]/div[2]/button[2]").click()
         sleep(2)
-        print("예약")
-        browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[2]/dl/dd/div/div[2]/label").click()
+        # print("예약")
+        # browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[2]/dl/dd/div/div[2]/label").click()
 
-        print("시간 설정")
-        browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[2]/dl/dd/div/div[5]/div/a").click()
+        # print("시간 설정")
+        # browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[2]/dl/dd/div/div[5]/div/a").click()
   
-        sleep(2)
-        print("시간 선택")
-        browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[2]/dl/dd/div/div[5]/div/div/ul/li['"+str(boardCount)+"']/a").click()
+        # sleep(2)
+        # print("시간 선택",boardCount)
+        # if boardCount == 10 :
+        #     browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[2]/dl/dd/div/div[5]/div/div/ul/li[10]/a").click()
+        # elif boardCount == 11 :
+        #     browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[2]/dl/dd/div/div[5]/div/div/ul/li[11]/a").click()
+        # elif boardCount == 12 :
+        #     browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[2]/dl/dd/div/div[5]/div/div/ul/li[12]/a").click()
+        # elif boardCount == 13 :
+        #     browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[2]/dl/dd/div/div[5]/div/div/ul/li[13]/a").click()
+        # elif boardCount == 14 :
+        #     browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[2]/dl/dd/div/div[5]/div/div/ul/li[14]/a").click()
+        # elif boardCount == 15 :
+        #     browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[2]/dl/dd/div/div[5]/div/div/ul/li[15]/a").click()
+        # elif boardCount == 16 :
+        #     browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[2]/dl/dd/div/div[5]/div/div/ul/li[16]/a").click()
+        # elif boardCount == 17 :
+        #     browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[2]/dl/dd/div/div[5]/div/div/ul/li[17]/a").click()
+        # elif boardCount == 18 :
+        #     browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[2]/dl/dd/div/div[5]/div/div/ul/li[18]/a").click()
+        # elif boardCount == 19 :
+        #     browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[2]/dl/dd/div/div[5]/div/div/ul/li[19]/a").click()
+        # else :
+        #     browser.find_element(By.XPATH,"//*[@id='layer']/div/div/div[2]/div/div[2]/dl/dd/div/div[5]/div/div/ul/li[20]/a").click()
+        #
         
         sleep(2)
         print("발행설정 > 카테고리(선택) 시선이 담긴 이슈")
@@ -285,7 +315,7 @@ def board_run(conn,browser) :
         if boardMaxData[0] >= boardMaxData[1] :
             continue
         else :
-            curCount = insert_board(conn,tmp,browser, curCount, maxCount, linkList, tomorrowStr, boardMaxData[0] + 9)
+            curCount = insert_board(conn,tmp,browser, curCount, maxCount, linkList, tomorrowStr, boardMaxData[0] + 10)
         
         if curCount == maxCount : 
             borderNm = []
@@ -304,8 +334,7 @@ def main() :
     print("DB 드라이버 연결")
     database = r"d:\sqLiteDataBase\kakaoBoard.db"
     conn = sqlite3.connect(database)
-   
-
+    
     with conn :
         print("-------start-------")
         print("현재 보드 횟수 초기화 시작")
@@ -321,7 +350,8 @@ def main() :
             while bTrue : 
                 try :
                     board_run(conn,browser)
-
+                    os.system('pause')
+                    input()
                     #60초에 한번 데이터 조회하여 실행
                     sleep(60)
                 except Exception as e :

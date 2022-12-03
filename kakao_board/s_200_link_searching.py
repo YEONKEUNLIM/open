@@ -17,6 +17,8 @@ from selenium.webdriver.common.by import By
 import sqlite3
 from sqlite3 import Error
 import re
+import os
+
 ##
 def humorSearch(conn, param) :
     siteNo = param[1]
@@ -176,14 +178,15 @@ def main() :
     print("DB 드라이버 연결")
     database = r"d:\sqLiteDataBase\kakaoBoard.db"
     conn = sqlite3.connect(database)
-   
+    
     with conn :
         print("-------start-------")
         bTrue = True
         while bTrue :
             try :
                 search_run(conn)
-                
+                os.system('pause')
+                input()
                 #60초에 한번 데이터 조회하여 실행
                 sleep(60)
             except Exception as e :
