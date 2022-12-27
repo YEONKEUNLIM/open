@@ -26,7 +26,7 @@ category = "" #카테고리 19 : humor
 
 
 #카카오 로그인
-def kakao_login(m):
+def kakao_login(conn, m):
     if m :
         print("################# KAKAO LOG IN START ############")
         print("브라우저 객체 생성")
@@ -45,19 +45,24 @@ def kakao_login(m):
         
 
         ##browser.find_element(By.ID, "id_email_2").send_keys("01091300112")
-        ##browser.find_element(By.ID,"id_password_3").send_keys("")
-       
-        browser.find_element(By.ID, "input-loginKey").send_keys("01091300112")
-        browser.find_element(By.ID,"input-password").send_keys("")
-        sleep(1)
-        print("로그인")
-        browser.find_element(By.CLASS_NAME,"highlight").click()
-        ##browser.find_element(By.CLASS_NAME,"btn_confirm").click()
+        ##browser.find_element(By.ID,"id_password_3").send_keys("sksmsdus00!!!")
+        userInfo = userinfo_search(conn).fetchall()
+        if userInfo == [] :
+            print("등록된 유저 정보가 없습니다. skip", userInfo)
+        
+        for tmp in userInfo :
+            
+            browser.find_element(By.ID, "input-loginKey").send_keys(tmp[0])
+            browser.find_element(By.ID,"input-password").send_keys(tmp[1])
+            sleep(1)
+            print("로그인")
+            browser.find_element(By.CLASS_NAME,"highlight").click()
+            ##browser.find_element(By.CLASS_NAME,"btn_confirm").click()
 
 
-        print("로그인 인증까지 대기시간 필요")
-        sleep(10)
-        print("################# KAKAO LOG IN END ###############")
+            print("로그인 인증까지 대기시간 필요")
+            sleep(10)
+            print("################# KAKAO LOG IN END ###############")
 
         return browser
     else :
@@ -75,6 +80,18 @@ def data_connection(db_file):
         print(e)
 
     return conn
+
+
+#유저 정보 조회
+def userinfo_search(conn):
+    print("################# DB GET START ##################")
+    sql = "SELECT PHONE_NUMBER, PASSWORD FROM 'USER_INFO' WHERE USER_NAME = 'lotuslim'"
+    cur = conn.cursor()
+    cur.execute(sql)
+    #conn.close()
+    #cur.close()
+    print("################## DB GET END ###################")
+    return cur
 
 #데이터 조회
 def data_search(conn):
@@ -345,7 +362,7 @@ def main() :
         while bTrue == False :
 
             bTrue = True
-            browser = kakao_login(bTrue)
+            browser = kakao_login(conn,bTrue)
 
             while bTrue : 
                 try :
