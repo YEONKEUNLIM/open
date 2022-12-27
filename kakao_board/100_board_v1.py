@@ -57,7 +57,7 @@ def kakao_login(m):
 
         print("로그인 인증까지 대기시간 필요")
         sleep(10)
-        print("################# KAKAO LOG IN END ##############")
+        print("################# KAKAO LOG IN END ###############")
 
         return browser
     else :
