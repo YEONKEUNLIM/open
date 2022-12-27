@@ -43,9 +43,6 @@ def kakao_login(conn, m):
 
         print("로그인 접속 정보 입력")
         
-
-        ##browser.find_element(By.ID, "id_email_2").send_keys("01091300112")
-        ##browser.find_element(By.ID,"id_password_3").send_keys("sksmsdus00!!!")
         userInfo = userinfo_search(conn).fetchall()
         if userInfo == [] :
             print("등록된 유저 정보가 없습니다. skip", userInfo)
