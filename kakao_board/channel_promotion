@@ -1,0 +1,73 @@
+from ast import Try
+from asyncio.windows_events import NULL
+from cProfile import label
+from concurrent.futures import thread
+from socket import create_connection
+import threading
+from time import sleep, time
+from typing import KeysView
+from warnings import catch_warnings
+from xml.dom.minidom import Attr
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import sqlite3
+from sqlite3 import Error
+import datetime
+import os
+
+kakaoUrl = "https://localhost:8081" #kakao 창작 Url
+browser = NULL #브라우저 객체 생성
+boardUrl = "" #추가할 보드 url
+title = "" #보드 제목
+comment = "" #보드 설명
+contentsLink = "" #링크
+category = "" #카테고리 19 : humor
+
+#카카오 로그인
+def kakao_login(conn, m):
+    if m :
+        print("################# KAKAO LOG IN START ############")
+        print("브라우저 객체 생성")
+        browser = webdriver.Chrome()
+        
+      
+        print("경고창 unload 처리")
+    
+        print("카카오 창작소 open")
+        browser.get(kakaoUrl)
+
+        print("카로그인창 접속")
+        browser.find_element(By.XPATH,"/html/body/input[1]").click()
+        print("로그인 접속 정보 입력")
+        
+        browser.quit()
+    else :
+        browser.quit()
+        print("====browser.close()====")
+        
+def main() : 
+        while bTrue == False :
+
+            bTrue = True
+        
+            while bTrue : 
+                try :
+                    browser = kakao_login(bTrue)
+                    input()
+                    #60초에 한번 데이터 조회하여 실행
+                    sleep(300)
+                except Exception as e :
+                    print("board 시작시(board_run) 예외가 발생 했습니다.", e)
+                    #현재 세션의 브라우저만 종료
+                    #browser.close() 
+                    #전체 세션의 브라우저 종료
+                    browser.quit()
+                    bTrue = False
+
+            sleep(3600) #60분
+            #sleep(60) #1분
+
+        print("--------end------")
+            
+if __name__ == '__main__':
+    main()

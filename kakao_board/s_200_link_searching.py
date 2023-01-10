@@ -25,7 +25,7 @@ def humorSearch(conn, param) :
     default_url = param[3]
     sub_url = param[4]
     boardNm = param[0]
-    category = param[2]
+    category = param[2]  
 
     url = default_url+sub_url
     headers = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"}
@@ -185,10 +185,12 @@ def main() :
         while bTrue :
             try :
                 search_run(conn)
-                os.system('pause')
-                input()
+                #os.system('pause')
+                #input()
                 #60초에 한번 데이터 조회하여 실행
-                sleep(60)
+                #sleep(60)
+                quit()
+                
             except Exception as e :
                 print("board 시작시(board_run) 예외가 발생 했습니다.", e)
                 #현재 세션의 브라우저만 종료
@@ -196,6 +198,8 @@ def main() :
                 #전체 세션의 브라우저 종료
                 #browser.quit()
                 bTrue = False
+                quit()
+                
             sleep(300) #5분
             #sleep(3600) #60분
         print("--------end------")
