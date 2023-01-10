@@ -30,9 +30,9 @@ def kakao_login(conn, m):
     if m :
         print("################# KAKAO LOG IN START ############")
         print("브라우저 객체 생성")
-        browser = webdriver.Chrome()
+        browser = webdriver.Chrome(r"C:\open\chromedriver.exe")
         
-      
+        
         print("경고창 unload 처리")
     
         print("카카오 창작소 open")
@@ -58,7 +58,7 @@ def kakao_login(conn, m):
 
 
             print("로그인 인증까지 대기시간 필요")
-            sleep(10)
+            sleep(50)
             print("################# KAKAO LOG IN END ###############")
 
         return browser
@@ -364,10 +364,11 @@ def main() :
             while bTrue : 
                 try :
                     board_run(conn,browser)
-                    os.system('pause')
-                    input()
+                    #os.system('pause')
+                    #input()
                     #60초에 한번 데이터 조회하여 실행
-                    sleep(60)
+                    #sleep(60)
+                    quit()
                 except Exception as e :
                     print("board 시작시(board_run) 예외가 발생 했습니다.", e)
                     #현재 세션의 브라우저만 종료
@@ -375,7 +376,7 @@ def main() :
                     #전체 세션의 브라우저 종료
                     browser.quit()
                     bTrue = False
-
+                    quit()
             sleep(3600) #60분
             #sleep(60) #1분
 
