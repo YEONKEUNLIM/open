@@ -308,6 +308,12 @@ def board_run(conn,browser) :
     if data == [] :
         print("등록된 data가 없습니다. skip", data)
     
+    if len(data) < 3 :
+        print("등록된 data가 3건 미만입니다. skip", len(data))
+        browser.quit()
+        bTrue = False
+        quit()
+        
     curCount = 0
     maxCount = 3
     borderNm = []
