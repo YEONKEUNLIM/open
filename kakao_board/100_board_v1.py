@@ -93,13 +93,14 @@ def userinfo_search(conn):
 #데이터 조회
 def data_search(conn):
     print("################# DB GET START ##################")
-    sql = "SELECT A.BOARD_NAME, A.BOARD_URL, B.TITLE, B.COMMENT, B.FULL_LINK, B.CATEGORY, B.LINK_NO FROM 'BOARD_MASTER' A LEFT OUTER JOIN 'LINK_INFO' B WHERE A.BOARD_NAME = B.BOARD_NAME AND A.CATEGORY = B.CATEGORY AND A.USE_YN = 'Y' AND B.USE_YN = 'Y' AND B.UPLOAD_FLAG = 'N' AND A.CUR_CNT < A.MAX_CNT ORDER BY A.BOARD_NAME, B.LINK_NO"
+    sql = "SELECT A.BOARD_NAME, A.BOARD_URL, B.TITLE, B.COMMENT, B.FULL_LINK, B.CATEGORY, B.LINK_NO FROM 'BOARD_MASTER' A LEFT OUTER JOIN 'LINK_INFO' B WHERE A.BOARD_NAME = B.BOARD_NAME AND A.CATEGORY = B.CATEGORY AND A.USE_YN = 'Y' AND B.USE_YN = 'Y' AND B.UPLOAD_FLAG = 'N' AND A.CUR_CNT < A.MAX_CNT ORDER BY B.LINK_NO"
     cur = conn.cursor()
     cur.execute(sql)
     #conn.close()
     #cur.close()
     print("################## DB GET END ###################")
     return cur
+
 
 
 #데이터 조회
@@ -124,7 +125,8 @@ def insert_board(conn, data, browser, CurCount, MaxCount, linkList, tomorrow, bo
     print("추가할 보드 url")
     boardUrl = data[1] #boardUrl = "channel/_Shxnlxj/dashboard"
     print("보드 제목")
-    title = data[2] #title = "제목 테스트"
+    #title = data[2] #title = "제목 테스트"
+    title = "유머와 사연 "+str(int(data[6]/3))+"번째 이야기" #title = "제목 테스트"
     print("보드 설명")
     comment = data[3] #comment = "설명 테스트"
     print("링크")
@@ -357,10 +359,32 @@ def main() :
     
     with conn :
         print("-------start-------")
-        print("현재 보드 횟수 초기화 시작")
-        init_board_curcnt_zero(conn)
-        print("현재 보드 횟수 초기화 종료")
+        #print("현재 보드 횟수 초기화 시작")
+        #init_board_curcnt_zero(conn)
+        #print("현재 보드 횟수 초기화 종료")
         print("카카오 화면 띄우기")
+        
+        data = data_search(conn).fetchall()
+  
+        if data == [] :
+            print("등록된 data가 없습니다. skip", data)
+        
+        if len(data) < 3 :
+            print("등록된 data가 3건 미만입니다. skip", len(data))
+            browser.quit()
+            quit()
+            
+            
+        print("보드 발행 max 인지 체크 시작")
+        boardMaxData = check_board_full(conn, data[0][0]).fetchone()
+        print("등록된 보드가 MAX 입니다. skip", boardMaxData[0])
+        print("등록된 보드가 MAX 입니다. skip", boardMaxData[1])
+        if boardMaxData[0] >= boardMaxData[1] :
+            print("등록된 보드가 MAX 입니다. skip", boardMaxData[0])
+            browser.quit()
+            quit()
+        print("보드 발행 max 인지 체크 종료")
+        
         bTrue = False
         while bTrue == False :
 
