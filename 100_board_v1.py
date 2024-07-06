@@ -44,11 +44,11 @@ def kakao_login(m):
         print("로그인 접속 정보 입력")
         
 
-        ##browser.find_element(By.ID, "id_email_2").send_keys("01091300112")
-        ##browser.find_element(By.ID,"id_password_3").send_keys("sksmsdus00!!!")
+        ##browser.find_element(By.ID, "id_email_2").send_keys("phonNumber")
+        ##browser.find_element(By.ID,"id_password_3").send_keys("pw")
        
-        browser.find_element(By.ID, "input-loginKey").send_keys("01091300112")
-        browser.find_element(By.ID,"input-password").send_keys("sksmsdus00!!!")
+        browser.find_element(By.ID, "input-loginKey").send_keys("phonNumber")
+        browser.find_element(By.ID,"input-password").send_keys("pw!!!")
         sleep(1)
         print("로그인")
         browser.find_element(By.CLASS_NAME,"highlight").click()
